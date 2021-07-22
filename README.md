@@ -1,5 +1,3 @@
-# grading_helper
-
 # Grading helper
 
 This repository is to help us add score at the end of the name of graded files.
