@@ -219,7 +219,7 @@ def click_rename():
             # A_B + _ + score + .pdf - A_B_score.pdf
             newName = firstPart + '_' + score + '.pdf'
 
-        labels[i][5].configure(text=newName)
+        labels[i][4].configure(text=newName)
 
         fullname = folderpath + '/' + newName
         oriName = folderpath + '/' + pdf_names[i-1]
