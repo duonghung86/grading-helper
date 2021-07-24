@@ -1,5 +1,3 @@
-# grading_helper
-
 # Grading helper
 
 This repository is to help us add score at the end of the name of graded files.
@@ -19,4 +17,4 @@ Install the packages in the `requirements.txt` file and then run `GpGUI.py`
 3.	After verifying all scores, click the bottom button to rename all files (remove long path and add grade at the end). For now, the name in the New Name column will not change after you edit the box, but don’t worry because it still changes when renaming
 
 
-![figs\demo.PNG](figs\demo.PNG)
+![figs\demo.PNG](https://github.com/duonghung86/grading-helper/blob/main/figs/demo.PNG)
