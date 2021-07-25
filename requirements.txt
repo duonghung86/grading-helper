@@ -1,9 +1,6 @@
-imutils==0.5.4
-numpy
-opencv-python==4.5.3.56
-pdf2image==1.16.0
-Pillow==8.3.1
-tensorflow==2.3.0
-tensorflow-estimator==2.3.0
-tensorflow-hub 
-tk==0.1.0
+pip install imutils
+pip install pyqt5
+pip install pdf2image
+pip install opencv-python
+pip install onnxruntime
+conda install conda-forge::numpy "blas=*=openblas"
