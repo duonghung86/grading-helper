@@ -182,7 +182,7 @@ def create_grid(nrow):
                 label = QtWidgets.QLineEdit('0')
                 label.setMaxLength(3)
                 label.setFixedWidth(40)
-                # label.textChanged.connect(update_name)
+                label.textChanged.connect(update_name)
             else:
                 label = QLabel(str(i))
             grid.addWidget(label, i, j)
@@ -219,25 +219,30 @@ def select_folder():
     for i, name in enumerate(pdf_names):
         labels[i][1].setText(name)
         filename = folder_path + '/' + name
-        image = convert_from_path(filename, last_page=1,
-                                  poppler_path=POPPLER_PATH
-                                  )[0]
-        xsize, ysize = image.size
-        image = image.crop((xsize * (1 - CROP_RATIO), 0, xsize, xsize * CROP_RATIO * 0.7))
-        # Display the cropped image
-        qim = image.resize((70,70))
-        qim = ImageQt(qim.copy())
-        labels[i][2].setPixmap(QtGui.QPixmap.fromImage(qim).copy())
+        try:
+            image = convert_from_path(filename, last_page=1,
+                                      poppler_path=POPPLER_PATH
+                                      )[0]
+            xsize, ysize = image.size
+            image = image.crop((xsize * (1 - CROP_RATIO), 0, xsize, xsize * CROP_RATIO * 0.7))
+            # Display the cropped image
+            qim = image.resize((70,70))
+            qim = ImageQt(qim.copy())
+            labels[i][2].setPixmap(QtGui.QPixmap.fromImage(qim).copy())
 
-        image = preprocess(image.copy())
-        #print(image)
-        score = pred_grade(image)
-        #print(score)
-        # Display score in the QLineEdit
+            image = preprocess(image.copy())
+            #print(image)
+            score = pred_grade(image)
+            #print(score)
+            # Display score in the QLineEdit
+
+        except Exception as e:
+            print("Error in {}: {}".format(i,e))
+            score = 'NA'
         labels[i][3].setText(str(score))
-        labels[i][3].textChanged.connect(update_name)
+        #labels[i][3].textChanged.connect(update_name)
 
-        new_name = rename(name,score)
+        new_name = rename(name, score)
         # Construct new name
         labels[i][4].setText(new_name)
         pro_bar.setValue(i+1)
@@ -285,76 +290,7 @@ pro_bar = win.findChildren(QtWidgets.QProgressBar)[0]
 
 scr_area = win.findChildren(QtWidgets.QScrollArea)[0]
 
-# widget = QtWidgets.QWidget()  # Widget that contains the collection of Vertical Box
-# grid = QtWidgets.QGridLayout()  # The Vertical Box that contains the Horizontal Boxes of  labels and buttons
 
-# ROWS = 51
-# COLS = 5
-# col_names = ['Index', 'Original name', 'Image', 'Prediction', 'New name']
-# header_font = QtGui.QFont("Times", 10, weight=QtGui.QFont.Bold)
-# for i in range(COLS):
-#     label = QLabel(col_names[i])
-#     label.setFont(header_font)
-#     grid.addWidget(label, 0, i)
-# labels = []
-# for i in range(1, ROWS):
-#     rlabels = []
-#     grid.setRowMinimumHeight(i,100)
-#     for j in range(0, COLS):
-#         if j == 3: # Prediction columns
-#             label = QtWidgets.QLineEdit('0')
-#             label.setMaxLength(3)
-#             label.setFixedWidth(40)
-#             #label.textChanged.connect(update_name)
-#         else:
-#             label = QLabel(str(i))
-#         grid.addWidget(label, i, j)
-#         rlabels.append(label)
-#     labels.append(rlabels)
-# # for i in range(1,50):
-# #     object = QLabel("TextLabel")
-# #     vbox.addWidget(object)
-#
-# widget.setLayout(grid)
-
-# # Scroll Area Properties
-# scr_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-# scr_area.setWidgetResizable(True)
-# scr_area.setWidget(widget)
-
-# scr_area.setCentralWidget(self.scroll)
-
-
-# print(scr_area)
-# scr_area.setWidget(label)
-# layouts = win.findChildren(QtWidgets.QGridLayout)
-# gls = get_obj_names(layouts)
-# print(gls.keys())
-
-# widgets = win.findChildren(QtWidgets.QWidget)
-# wgs = get_obj_names(widgets)
-# print(wgs.keys())
-# content_area = wgs['scrollAreaWidgetContents']
-# #layout.setRowStretch(2, 40)
-# #layout.setColumnStretch(2, 4)
-# layout = QtWidgets.QGridLayout()
-# content_area.setLayout(QtWidgets.QGridLayout())
-# ROWS = 15
-# COLS = 5
-# #labels = [[QLabel() for j in range(COLS)] for i in range(ROWS)]
-# for i in range(0, ROWS):
-#     #layout.setVerticalSpacing(15)
-#     layout.setRowStretch(i, 10)
-#
-#     for j in range(0, COLS):
-#             #elif j != 3: # Labels
-#             #labels[i][j] = Label(frame_labels, text=str(i))
-#             layout.addWidget(QLabel(str(i)), i, j)
-#
-# scr_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)
-# scr_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-# scr_area.setWidgetResizable(True)
-# layout.addWidget(QtWidgets.QScrollArea(), 0, 0, 1, 1)
 win.show()
 
 sys.exit(app.exec())
