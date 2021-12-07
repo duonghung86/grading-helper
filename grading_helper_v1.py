@@ -5,15 +5,21 @@ import sys
 import os
 import onnxruntime as rt
 
-from pdf2image import convert_from_path
 from PIL.ImageQt import ImageQt
-
+from PIL import Image
 import cv2
 from numpy import reshape,argmax, array,where, nonzero
 import imutils
 from imutils.contours import sort_contours
 
+import fitz
 
+def pdf2img(fname,pno = 0):
+    doc = fitz.open(fname)
+    page = doc.load_page(pno)
+    pix = page.get_pixmap()
+    mode = "RGBA" if pix.alpha else "RGB"
+    return Image.frombytes(mode, [pix.width, pix.height], pix.samples)
 
 def get_obj_names(objects):
     ob_dict = {}
@@ -207,7 +213,7 @@ def select_folder():
     fnames = os.listdir(folder_path)
     pdf_names = [x for x in fnames if '.pdf' in x]
     no_files = len(pdf_names)
-
+    qlabels['label_status'].setText('Loading ...')
     create_grid(no_files)
     pro_bar.setMaximum(no_files)
     # for i in range(no_files, ROWS - 1):
@@ -220,9 +226,7 @@ def select_folder():
         labels[i][1].setText(name)
         filename = folder_path + '/' + name
         try:
-            image = convert_from_path(filename, last_page=1,
-                                      poppler_path=POPPLER_PATH
-                                      )[0]
+            image = pdf2img(filename)
             xsize, ysize = image.size
             image = image.crop((xsize * (1 - CROP_RATIO), 0, xsize, xsize * CROP_RATIO * 0.7))
             # Display the cropped image
@@ -262,7 +266,6 @@ def click_rename():
 
 # CONSTANT ###############
 
-POPPLER_PATH = r'./poppler'
 CROP_RATIO = 0.3
 
 # Prediction ################
